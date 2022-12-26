@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sandbox-load-balancer-svc
+  annotations:
+        service.beta.kubernetes.io/azure-load-balancer-internal: "true" # <- Uncomment this for Azure Kubernetes Service!!
+        # cloud.google.com/load-balancer-type: "Internal" # <- Uncomment this for GCP!!
+        # service.beta.kubernetes.io/aws-load-balancer-internal: "true" # <- Uncomment this for AWS!!
+        # service.beta.kubernetes.io/oci-load-balancer-internal: "true" # <- Uncomment this for OCI!!
+        # service.beta.kubernetes.io/openstack-internal-load-balancer: "true" # <- Uncomment this for Openstack!!
+spec:
+  type: LoadBalancer  
+  selector:
+    app: sandbox
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000

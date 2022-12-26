@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sandbox-cluster-ip-svc
+spec:
+  type: ClusterIP  # <- You can remove this, as ClusterIp is default type.!!
+  clusterIP: 10.0.0.10 # <- You can pass this to assign a static IP to service.!!
+  selector:
+    app: sandbox
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
