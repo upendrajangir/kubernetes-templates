@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sandbox
+  labels:
+    app: sandbox
+spec:
+  initContainers:
+  - name: init-container
+    image: busybox:latest
+    command: ['sh', '-c', 'echo "Init container completed" && sleep 2']
+
+  containers:
+  - name: main-container
+    image: nginx:latest
+    ports:
+    - containerPort: 80
+    resources:
+      limits:
+        cpu: 100m
+        memory: 128Mi
+      requests:
+        cpu: 50m
+        memory: 64Mi
+    volumeMounts:
+    - name: config-volume
+      mountPath: /etc/nginx/conf.d
+    - name: shared-data
+      mountPath: /usr/share/nginx/html
+
+  - name: sidecar-container
+    image: busybox:latest
+    command: ['sh', '-c', 'while true; do echo "Sidecar container is running" && sleep 10; done']
+    resources:
+      limits:
+        cpu: 50m
+        memory: 64Mi
+      requests:
+        cpu: 25m
+        memory: 32Mi
+    volumeMounts:
+    - name: shared-data
+      mountPath: /data
+
+  volumes:
+  - name: config-volume
+    configMap:
+      name: nginx-config
+  - name: shared-data
+    emptyDir: {}
+

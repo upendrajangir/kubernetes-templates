@@ -1,0 +1,40 @@
+apiVersion: apps/v1  # API version and kind of the Kubernetes object
+kind: StatefulSet
+metadata:
+  name: sandbox  # Metadata for the StatefulSet, including its name
+spec:
+  serviceName: sandbox-service  # Name of the associated headless service for the StatefulSet
+  replicas: 3  # Number of replicas for the StatefulSet
+  selector:
+    matchLabels:
+      app: sandbox  # Label selector to identify the pods in the StatefulSet
+  template:
+    metadata:
+      labels:
+        app: sandbox  # Labels applied to each pod in the StatefulSet
+    spec:
+      terminationGracePeriodSeconds: 10  # Time in seconds to wait before forcefully terminating the pod
+      containers:
+      - name: sandbox-container  # Name of the container in the pod
+        image: sandbox:1.0.0  # Container image and version
+        imagePullPolicy: IfNotPresent  # Policy for pulling the container image
+        ports:
+        - containerPort: 80  # Container port exposed
+          name: web
+        env:
+        - name: POD_NAMESPACE  # Name of the environment variable
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace  # Source of the environment variable value
+        volumeMounts:
+        - name: sandbox-data  # Name of the volume mount
+          mountPath: /var/lib/sandbox  # Path where the volume is mounted in the container
+  volumeClaimTemplates:
+  - metadata:
+      name: sandbox-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: l1-storage-class
+      resources:
+        requests:
+          storage: 1Gi
