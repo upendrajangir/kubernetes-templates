@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sandbox-ingress
+  annotations:
+    # Use Traefik as the ingress controller
+    kubernetes.io/ingress.class: traefik
+spec:
+  # Define rules for the ingress
+  rules:
+    - host: sandbox.example.com
+      http:
+        paths:
+          - path: /
+            # Route requests to the sandbox service
+            backend:
+              service:
+                name: sandbox
+                port:
+                  name: http

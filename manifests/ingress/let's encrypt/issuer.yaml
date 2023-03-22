@@ -1,0 +1,16 @@
+apiVersion: cert-manager.io/v1 # API version and kind of the Kubernetes object
+kind: Issuer
+metadata:
+  name: sandbox-issuer # Metadata for the Issuer, including its name
+  namespace: default # Namespace where the Issuer will be created
+spec:
+  acme:
+    # The email address to be associated with the Let's Encrypt account
+    email: your-email@example.com
+    server: https://acme-v02.api.letsencrypt.org/directory # Let's Encrypt production API URL
+    privateKeySecretRef:
+      name: sandbox-issuer-account-key # Kubernetes secret to store the account's private key
+    solvers:
+      - http01:
+          ingress:
+            class: nginx # Ingress class to use for solving the HTTP-01 challenge

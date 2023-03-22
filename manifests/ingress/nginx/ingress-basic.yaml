@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1  # API version and kind of the Kubernetes object
+kind: Ingress
+metadata:
+  name: sandbox-ingress  # Metadata for the Ingress, including its name
+  annotations:
+    kubernetes.io/ingress.class: nginx  # Ingress controller class to use (NGINX in this case)
+    # You can add more annotations as required, for example, to enable SSL or configure other options
+spec:
+  rules:
+  - host: sandbox.example.com  # The domain name for your service
+    http:
+      paths:
+      - path: /  # The path that should be routed to the sandbox service
+        pathType: Prefix  # The type of path matching to use (Prefix or Exact)
+        backend:
+          service:
+            name: sandbox-service  # Name of the backend service to route traffic to
+            port:
+              number: 80  # Port number of the backend service
